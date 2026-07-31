@@ -2,10 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const TRIGGER_SECONDS = 2;
-const CLEAR_SECONDS = 3;
-const CONFIDENCE_THRESHOLD = 0.5;
-const DETECT_INTERVAL_MS = 350;
+const CONFIDENCE_THRESHOLD = 0.35;
+const DETECT_INTERVAL_MS = 300;
+
+// Rolling-window debounce instead of a strict consecutive-frame streak:
+// a single missed frame (occlusion by a hand, motion blur, a bad angle)
+// no longer resets progress back to zero.
+const TRIGGER_WINDOW = 6; // ~1.8s of samples
+const TRIGGER_HITS = 3; // seen in at least half of them
+const CLEAR_WINDOW = 10; // ~3s of samples
+const CLEAR_HITS = 0; // must be fully gone for the whole window
 
 type CatchRow = {
   id: number;
@@ -44,8 +50,7 @@ export default function Home() {
     ReturnType<typeof import("@tensorflow-models/coco-ssd").load>
   > | null>(null);
   const detectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const phoneSinceRef = useRef<number | null>(null);
-  const clearSinceRef = useRef<number | null>(null);
+  const samplesRef = useRef<boolean[]>([]);
   const stopSirenRef = useRef<(() => void) | null>(null);
   const currentCatchIdRef = useRef<number | null>(null);
 
@@ -71,7 +76,10 @@ export default function Home() {
       const tf = await import("@tensorflow/tfjs");
       const cocoSsd = await import("@tensorflow-models/coco-ssd");
       await tf.ready();
-      modelRef.current = await cocoSsd.load();
+      // mobilenet_v2 is slower but noticeably more accurate than the
+      // lite_mobilenet_v2 default, which is tuned for speed and misses
+      // partially hand-occluded phones fairly often.
+      modelRef.current = await cocoSsd.load({ base: "mobilenet_v2" });
       setModelLoading(false);
     })();
     refreshLog();
@@ -111,8 +119,7 @@ export default function Home() {
   const dismiss = useCallback(() => {
     clearAlarm();
     closeCurrentCatch();
-    phoneSinceRef.current = null;
-    clearSinceRef.current = null;
+    samplesRef.current = [];
   }, [clearAlarm, closeCurrentCatch]);
 
   useEffect(() => {
@@ -129,30 +136,22 @@ export default function Home() {
     const video = videoRef.current;
     if (!model || !video || video.readyState < 2) return;
 
-    const predictions = await model.detect(video);
-    const phoneSeen = predictions.some(
-      (p) => p.class === "cell phone" && p.score >= CONFIDENCE_THRESHOLD
-    );
-    const now = performance.now();
+    const predictions = await model.detect(video, 20, CONFIDENCE_THRESHOLD);
+    const phoneSeen = predictions.some((p) => p.class === "cell phone");
 
-    if (phoneSeen) {
-      clearSinceRef.current = null;
-      if (phoneSinceRef.current === null) {
-        phoneSinceRef.current = now;
-      } else if (
-        now - phoneSinceRef.current >= TRIGGER_SECONDS * 1000 &&
-        !caught
-      ) {
+    const samples = samplesRef.current;
+    samples.push(phoneSeen);
+    if (samples.length > CLEAR_WINDOW) samples.shift();
+
+    if (!caught) {
+      const recent = samples.slice(-TRIGGER_WINDOW);
+      const hits = recent.filter(Boolean).length;
+      if (recent.length >= TRIGGER_WINDOW && hits >= TRIGGER_HITS) {
         triggerAlarm();
       }
     } else {
-      phoneSinceRef.current = null;
-      if (clearSinceRef.current === null) {
-        clearSinceRef.current = now;
-      } else if (
-        now - clearSinceRef.current >= CLEAR_SECONDS * 1000 &&
-        caught
-      ) {
+      const hits = samples.filter(Boolean).length;
+      if (samples.length >= CLEAR_WINDOW && hits <= CLEAR_HITS) {
         dismiss();
       }
     }
@@ -162,7 +161,11 @@ export default function Home() {
     setError(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
+        video: {
+          facingMode: "user",
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
         audio: false,
       });
       streamRef.current = stream;
@@ -170,8 +173,7 @@ export default function Home() {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
       }
-      phoneSinceRef.current = null;
-      clearSinceRef.current = null;
+      samplesRef.current = [];
       setRunning(true);
     } catch (err) {
       setError(
