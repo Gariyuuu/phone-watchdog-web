@@ -15,7 +15,14 @@ reasoning is fabricated beyond what the repo itself shows.
   in the browser tab, a Postgres-backed API logs each catch, and a Basic
   Auth proxy gates the deployed URL." The sibling repo
   `~/Projects/phone-watchdog` (a standalone Python script, `monitor.py`)
-  is consistent with being that original prototype.
+  is consistent with being that original prototype. **Caveat (added
+  2026-08-07):** the sibling repo's own independently-checkpointed docs
+  do not describe itself as replaced/deprecated — it documents itself as
+  a standalone, currently-functional tool and states "the two are not
+  wired together" with no claim either way about supersession. Read
+  "replaces" here as this commit's own framing of developer intent at
+  the time, not as a confirmed statement that the Python script is no
+  longer used.
 - **Effect:** No server ever sees the webcam feed or runs inference — this
   shapes the entire architecture (see `ARCHITECTURE.md`), trading
   potentially-higher YOLO accuracy for zero-infra-cost, zero-video-upload

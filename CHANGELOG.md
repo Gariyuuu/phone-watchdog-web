@@ -87,6 +87,42 @@ fixed, per this audit's read-and-document scope).
 
 ---
 
+## 2026-08-07 — Final transfer checkpoint (re-verification pass)
+
+**Type:** Documentation only. No product/application behavior changed.
+
+Re-verified the full 17-file memory system against the real current
+repo state (a different Claude Code account than the one that wrote the
+2026-08-06 audit, per this repo's cold-handoff workflow). Found and
+fixed:
+
+- `PROJECT_STATE.md`'s git-state section was stale: it described the 17
+  memory files as uncommitted, but they had since been committed as
+  `e2f976e`. Rewrote with the current (clean, 6-commit) state.
+- Several smaller stale references to "5 commits, latest `ecd6d89`"
+  (`CLAUDE.md`, `ROADMAP.md`) — updated to reflect `e2f976e` as the
+  latest commit overall.
+- The "this app replaced the Python prototype" framing (`CLAUDE.md`,
+  `DECISIONS.md`) was softened: the sibling `~/Projects/phone-watchdog`
+  repo's own (independently checkpointed) docs don't describe itself as
+  deprecated, so this repo's docs now note that "replaces" reflects this
+  repo's own commit-message framing, not a confirmed fact about the
+  sibling's current status.
+- Added a new "Data-flow consistency check" section to `SECURITY.md`
+  explicitly resolving whether this dashboard's persistence (a Postgres
+  `catches` table storing two timestamps per event, never image/video
+  data) is consistent with the sibling's "nothing persisted" claim —
+  confirmed consistent, since the sibling's claim is scoped to
+  `monitor.py` specifically.
+- Refreshed `HANDOFF.md`'s "Prompt for the next Claude Code account"
+  section with the current verified state and the sibling-repo caveat.
+
+No secrets found (placeholder-only `.env.example`; `.env.local`
+confirmed untracked). `npx tsc --noEmit` and `npm run build` still pass;
+`npm run lint`'s pre-existing failure (`TASK-001`) is unchanged.
+
+---
+
 ## Prior history (reconstructed from `git log`)
 
 - **`fedeec1`** — Initial commit from Create Next App (scaffold only).

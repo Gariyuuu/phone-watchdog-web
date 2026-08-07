@@ -11,39 +11,25 @@ this file, except the documentation files themselves.
 
 ## Git state
 
+**Re-verified 2026-08-07** (superseding the "end of audit" snapshot
+below, which described a transient dirty state that has since been
+committed).
+
 - **Branch:** `main` (only branch that exists locally or on `origin`; no
-  other local or remote branches — confirmed via `git branch -a`).
-- **Remote:** `origin` → `https://github.com/Gariyuuu/phone-watchdog-web.git`
-  (confirmed via `git remote -v`).
+  other local or remote branches).
+- **Remote:** `origin` → `https://github.com/Gariyuuu/phone-watchdog-web.git`.
 - **Tracking:** `main` is up to date with `origin/main` (confirmed via
-  `git status`).
-- **Working tree at the START of this audit:** Clean. `git status`
-  reported "nothing to commit, working tree clean." No untracked files,
-  no staged/unstaged changes.
-- **Working tree as of the END of this audit (current state):**
-  **Dirty — by design, as the direct output of this documentation task.**
-  Per the task's explicit instructions, **nothing was committed.**
-  Exact `git status` output at the end of this session:
-  - `modified: CLAUDE.md` (rewritten from a one-line `@AGENTS.md` include
-    into the full operating manual)
-  - `Untracked files:` `API_REFERENCE.md`, `ARCHITECTURE.md`,
-    `CHANGELOG.md`, `DATABASE.md`, `DECISIONS.md`, `DEPLOYMENT.md`,
-    `FEATURES.md`, `FILE_MAP.md`, `HANDOFF.md`, `PROJECT_STATE.md` (this
-    file), `ROADMAP.md`, `SECURITY.md`, `SESSION_LOG.md`, `TASKS.md`,
-    `TESTING.md`, `UI_SYSTEM.md`
-  - No other file (nothing under `src/`, no config file) was modified —
-    confirmed via `git diff --stat`, which shows only `CLAUDE.md`
-    changed among tracked files.
-  - These 17 files (16 new + 1 modified) are the entire diff.
-    **Not staged, not committed, not pushed** — left exactly as the task
-    instructed ("Do not commit, push, deploy, reset, or discard
-    anything"). The next session (human or AI) should commit these
-    deliberately, once reviewed, rather than assuming it's already done.
-- **Latest commit (unchanged by this session):**
-  `ecd6d898461bed3356854674d8af92b20d990d6` ("Add custom favicon
-  (watchdog emoji)"), authored by Gary Wang, dated 2026-08-06 03:42:32
-  -0700.
-- **Full commit history (5 commits total, oldest to newest):**
+  `git status` and `git fetch origin`, which returned no new refs).
+- **Working tree (2026-08-07):** Clean. `git status` reports "nothing to
+  commit, working tree clean." 0 uncommitted changes, 0 files ahead of
+  `origin/main`.
+- **Latest commit:** `e2f976e81401f1ce306e879ef62dee39348993d5` ("docs:
+  add full handoff documentation system"), authored by Gary Wang, dated
+  2026-08-06 20:20:07 -0700. This is the commit that landed all 17
+  memory files described below — the "dirty, uncommitted" state
+  described in the original audit narrative (immediately below) was
+  committed shortly after that narrative was written, in the same commit.
+- **Full commit history (6 commits total, oldest to newest):**
   1. `fedeec1` — "Initial commit from Create Next App"
   2. `5ac4574` — "Add browser-based phone detection with alarm, overlay,
      and catch log" (the real feature commit: webcam/TensorFlow.js
@@ -56,10 +42,20 @@ this file, except the documentation files themselves.
      `.agents/skills/`, `.claude/skills/` symlinks, `skills-lock.json` —
      Neon Agent Skills, not application code)
   5. `ecd6d89` — "Add custom favicon (watchdog emoji)" (added
-     `src/app/icon.svg`)
-- **No uncommitted or untracked files of any kind at the START of this
-  audit.** See "Working tree as of the END of this audit" above for the
-  current (post-documentation-write) state.
+     `src/app/icon.svg`) — the latest **application** commit.
+  6. `e2f976e` — "docs: add full handoff documentation system" (all 17
+     memory files) — the latest commit overall.
+
+### Original audit narrative (2026-08-06, kept for history — now stale re: commit status)
+
+At the moment this file was originally written, the working tree was
+dirty by design (17 new/modified doc files, not yet staged or committed,
+per that session's task instructions to leave them for deliberate
+review). That is **no longer the current state** — those exact files
+were committed as `e2f976e` per the git state above. The original
+per-file breakdown (`modified: CLAUDE.md`, 16 untracked new files) is
+preserved only as a historical note, not as a description of the
+present working tree.
 
 ## Active objective
 

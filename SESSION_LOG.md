@@ -114,6 +114,76 @@ like `change-me-long-random-string`). No commit, push, deploy, reset, or
 discard was performed at any point this session; no application behavior
 was changed.
 
+## 2026-08-07 — Final transfer checkpoint (re-verification + cross-consistency pass)
+
+- **Account/agent:** A different Claude Code account/session than the
+  one that wrote the original 2026-08-06 audit above (per this repo's
+  cold-handoff workflow).
+- **Goal:** Re-verify the 17-file memory system against the real current
+  code/git state, resolve a specific data-flow question (does this
+  dashboard persist/display anything inconsistent with the sibling
+  `phone-watchdog` repo's freshly-checkpointed "nothing persisted"
+  claim?), scan for secrets, resolve cross-file contradictions, and
+  refresh `HANDOFF.md`'s next-account prompt.
+- **Files inspected:** All 17 memory files, `src/app/page.tsx`,
+  `src/app/api/catches/route.ts`, `package.json`, `.env.example`,
+  `.gitignore`, full `git log`/`git status`/`git fetch origin` output,
+  and (read-only) `~/Projects/phone-watchdog`'s `README.md`/`CLAUDE.md`/
+  `SECURITY.md` for the sibling-consistency check. The sibling repo was
+  not modified.
+- **Files changed:** `PROJECT_STATE.md` (git-state section was stale —
+  described the 17 docs as uncommitted, when they'd actually been
+  committed as `e2f976e` since that section was written; rewrote with a
+  2026-08-07 re-verified state and preserved the original narrative as
+  clearly-labeled history), `CLAUDE.md` (stale "5 commits, latest
+  `ecd6d89`" corrected to 6 commits/`e2f976e`; softened the "replaced the
+  Python prototype" claim to note the sibling's own docs don't describe
+  itself as deprecated), `ROADMAP.md` (stale "latest commit `ecd6d89`"
+  reference clarified), `DECISIONS.md` (`DEC-001` given the same
+  replaced/deprecated caveat), `SECURITY.md` (added a new "Data-flow
+  consistency check vs. the sibling `phone-watchdog` repo" section — the
+  resolved answer to this session's core question), `HANDOFF.md`
+  (refreshed the "Prompt for the next Claude Code account" section with
+  the sibling relationship, the data-persistence distinction, and the
+  current verified git/lint state; updated the top-of-file sibling note
+  to match the softened language), `SESSION_LOG.md` (this entry).
+- **Commands run:** `git status`, `git log --oneline -5`, `git fetch
+  origin` (no new refs), `npx tsc --noEmit` (clean), `npm run lint`
+  (still 1 pre-existing error, same as 2026-08-06, unchanged),
+  `npm run build` (clean, all 4 routes), `git grep` for secret-shaped
+  strings across tracked `*.md`/`src/`/`.env.example` (none found),
+  `git ls-files | grep env` (only `.env.example` tracked; `.env.local`
+  confirmed not tracked).
+- **Tests run:** Same static suite as above; no runtime/browser testing
+  performed this session either (out of scope, matches prior session's
+  constraints).
+- **Results:** Resolved data-flow question: **this dashboard does
+  persist data** (a Postgres `catches` table, `caught_at`/`cleared_at`
+  timestamps only, no image/video/frame data ever stored or sent — see
+  `SECURITY.md`) — **not a contradiction** with the sibling's
+  "nothing persisted" claim, because that claim is scoped to
+  `monitor.py` specifically, and this repo's own docs already correctly
+  scoped its own persistence claim; the two were just never stated
+  side-by-side until now. No real secrets found anywhere (placeholders
+  only in `.env.example`; `.env.local` untracked as expected).
+- **Decisions made:** None that change application behavior.
+  Documentation-only pass.
+- **Problems found:** `PROJECT_STATE.md`'s git-state section was
+  materially stale (claimed uncommitted docs that had, in fact, already
+  been committed). A handful of smaller "5 commits / latest `ecd6d89`"
+  references were stale after the docs commit landed. The "replaced the
+  Python prototype" framing, while accurate as a quote of the commit
+  message, read as a stronger claim about the sibling's current status
+  than the sibling's own (independently checkpointed) docs actually
+  support — softened for accuracy.
+- **Work completed:** Full re-verification pass per the task's 6-step
+  checklist; fixes applied as one scoped commit (see `CHANGELOG.md`).
+- **Work remaining:** Same as before — `TASK-001` (lint fix, still open,
+  re-confirmed still failing) and `TASK-002` (runtime smoke test, still
+  never performed) remain the two concrete next items.
+- **Recommended next action:** Same as the prior session — confirm with
+  the user before starting `TASK-001`.
+
 ## Template for future entries
 
 ## YYYY-MM-DD — <short goal description>

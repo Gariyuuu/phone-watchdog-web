@@ -54,14 +54,22 @@ Where something couldn't be verified from the repo, it is labeled
 - **Repository type:** Single Next.js app, not a monorepo. One
   `package.json` at the repo root.
 - **Sibling project note:** `~/Projects/phone-watchdog` (no trailing
-  `-web`) is a **separate, unrelated git repository** — a small Python
-  script (`monitor.py`) that appears to be the original local/YOLO-based
-  prototype this web app replaced. Commit `5ac4574`'s message says
-  explicitly: "Replaces the local Python/YOLO prototype with a fully
-  client-side TensorFlow.js detector so it can run as a website." The two
-  repos do **not** call into each other at runtime — there is no shared
-  code, API, or database between them. Do not confuse the two when working
-  in either repo.
+  `-web`) is a **separate git repository** — a small local Python script
+  (`monitor.py`) that is the original YOLO-based prototype for this idea.
+  Commit `5ac4574`'s message in *this* repo says "Replaces the local
+  Python/YOLO prototype with a fully client-side TensorFlow.js detector
+  so it can run as a website" — but that word reflects this repo's
+  commit-message framing at the time, not a confirmed current fact:
+  `~/Projects/phone-watchdog`'s own docs (its `README.md`/`CLAUDE.md`,
+  checkpointed independently) describe itself as a standalone, currently
+  -functional tool and explicitly state "the two are not wired together,"
+  without describing itself as deprecated or retired. **Do not assume the
+  Python version is dead** just because this repo's commit message used
+  the word "replaces" — treat it as "this repo's spiritual successor,
+  built independently," not "the Python version has been decommissioned."
+  Either way, the two repos do **not** call into each other at runtime —
+  there is no shared code, API, or database between them (confirmed from
+  both sides). Do not confuse the two when working in either repo.
 - **Important scope note:** `~/Projects` (the parent of this repo) is
   **not** a monorepo — it's ~20+ unrelated, independently-pushed git
   repos belonging to the same developer. Nothing in this memory system
@@ -72,12 +80,17 @@ Where something couldn't be verified from the repo, it is labeled
 See `PROJECT_STATE.md` for the exact, timestamped snapshot. Summary:
 
 - **Latest state:** Working tree clean, `main` branch, up to date with
-  `origin/main` (GitHub: `Gariyuuu/phone-watchdog-web`). 5 commits total.
-  Latest commit `ecd6d89` ("Add custom favicon (watchdog emoji)").
+  `origin/main` (GitHub: `Gariyuuu/phone-watchdog-web`). 6 commits total
+  (re-verified 2026-08-07). Latest commit `e2f976e` ("docs: add full
+  handoff documentation system") — this is the commit that landed the
+  17-file memory system itself; the previous entry point, `ecd6d89`
+  ("Add custom favicon"), was the latest **application** commit and is
+  now one commit behind.
 - **Current blockers:** None functionally, but `npm run lint` currently
   **fails** (one ESLint error, not a warning) — see "Known issues" below.
   This is a pre-existing condition, not something introduced by this
-  audit.
+  audit. Re-confirmed still failing (same single error, same line) as of
+  the 2026-08-07 checkpoint pass.
 - **Highest-priority next task:** Fix the `react-hooks/set-state-in-effect`
   lint error in `src/app/page.tsx` (line 85) so `npm run lint` passes
   cleanly. See `TASKS.md`.

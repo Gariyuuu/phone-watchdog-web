@@ -1,5 +1,42 @@
 # SECURITY.md — Defensive Security Review
 
+## Data-flow consistency check vs. the sibling `phone-watchdog` repo (2026-08-07)
+
+The sibling repo `~/Projects/phone-watchdog` (the Python `monitor.py`
+prototype) documents that it stores/transmits **nothing** — every webcam
+frame is processed in-memory and discarded, never written to disk,
+logged, or sent anywhere (see that repo's `SECURITY.md`/`DATABASE.md`/
+`README.md`). This repo (`phone-watchdog-web`) is a **different
+codebase** and does **not** make the same "nothing persisted" claim —
+verified directly from this repo's own code, not assumed:
+
+- **This dashboard does persist data.** `src/app/api/catches/route.ts`
+  writes to a Postgres `catches` table on every alarm trigger (`POST`)
+  and clear (`PATCH`), and `page.tsx` renders that table's contents back
+  as the "Caught log" list (`GET`).
+- **What's stored is strictly event metadata, never image/video data.**
+  The `catches` table has exactly three columns: `id`, `caught_at`
+  (timestamp), `cleared_at` (timestamp) — see `DATABASE.md`. There is no
+  column, and no code path anywhere in `src/`, that writes a video frame,
+  an image, or any raw webcam data to the database, to a log, or to any
+  network destination other than the browser's own `<video>` element
+  (which never leaves the client). Confirmed via a full read of
+  `src/app/page.tsx` and `src/app/api/catches/route.ts`: the only network
+  calls the client makes are the three `fetch("/api/catches", ...)`
+  calls, and none of them include frame/image data in the request body
+  (`POST`/`PATCH` send no body at all beyond an optional `{ id }`).
+- **Conclusion: no contradiction.** The sibling's "nothing persisted"
+  claim is about `monitor.py` specifically and remains true for that
+  codebase. This repo is honest about persisting something different and
+  much narrower — *when* a phone was seen and *when* it was cleared, not
+  *what the webcam saw*. A "dashboard" implies something is shown/stored,
+  and here that something is exactly two timestamps per catch, nothing
+  more. This distinction was previously implicit across `DATABASE.md`/
+  `CLAUDE.md` but not stated side-by-side with the sibling's claim until
+  this checkpoint pass.
+
+---
+
 This is a read-only, non-destructive review. No penetration testing, no
 credential guessing, no attempt was made to bypass the auth gate or
 access the live database — only a single unauthenticated `curl` GET

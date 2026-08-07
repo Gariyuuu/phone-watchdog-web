@@ -9,7 +9,9 @@ here.
 **Working MVP, deployed.** The core loop (webcam → client-side detection
 → alarm → best-effort Postgres logging), gated behind a shared password,
 is implemented and deployed to production. This is the state as of the
-latest commit (`ecd6d89`).
+latest application commit (`ecd6d89`); the repo's latest commit overall
+is now `e2f976e` (the 17-file documentation system), which did not touch
+application code — re-confirmed 2026-08-07.
 
 - **Objective:** A usable, personal phone-use accountability tool
   reachable from any browser with a webcam.

@@ -14,8 +14,13 @@ Live at **https://phone-watchdog-web.vercel.app** (confirmed responding
 correctly with its Basic Auth gate as of 2026-08-06).
 
 **Do not confuse this with `~/Projects/phone-watchdog`** (no `-web`
-suffix) — that's a separate, unrelated Python prototype this app
-replaced. No shared code/API/database between the two.
+suffix) — that's a separate Python prototype for the same idea. No
+shared code/API/database between the two (verified from both sides).
+This repo's own commit history calls itself a "replacement" for that
+script, but the sibling repo's own docs don't describe itself as
+deprecated — treat "replaced" as this repo's framing, not a confirmed
+fact about the sibling's current status. See `CLAUDE.md`'s "Sibling
+project note" and `DECISIONS.md` `DEC-001` for the full caveat.
 
 ## What should I read first?
 
@@ -123,21 +128,28 @@ or against a disposable database first if possible.
 
 ## Prompt for the next Claude Code account
 
+*(Refreshed 2026-08-07 — a checkpoint pass re-verified this whole memory
+system against the live repo, fixed several stale cross-references, and
+confirmed the docs were committed as `e2f976e`. See `SESSION_LOG.md`'s
+2026-08-07 entry for the full diff of what changed in that pass.)*
+
 Copy-paste this to start a new session cleanly:
 
 ```
 Read CLAUDE.md, PROJECT_STATE.md, and TASKS.md in full before doing
 anything else. Then:
 
-1. Run `git status` and `git log --oneline -5` and confirm the repo
-   state matches what PROJECT_STATE.md describes. If it doesn't (someone
-   else has committed/changed things since), stop and tell me what's
-   different before proceeding.
+1. Run `git status`, `git log --oneline -5`, and `git fetch origin`
+   (read-only) and confirm the repo state matches what PROJECT_STATE.md
+   describes (as of 2026-08-07: clean tree, up to date with origin,
+   latest commit `e2f976e`). If it doesn't (someone else has
+   committed/changed things since), stop and tell me what's different
+   before proceeding.
 2. Run the verification suite: `npx tsc --noEmit && npm run lint && npm
    run build`. Confirm tsc and build still pass. Confirm whether the
    known lint error (react-hooks/set-state-in-effect,
-   src/app/page.tsx:85) is still present or has been fixed since this
-   handoff was written.
+   src/app/page.tsx:85) is still present (it was, as of 2026-08-07) or
+   has been fixed since this handoff was written.
 3. In 3-5 sentences, summarize your understanding of: what this project
    is, what the current task is, and what specifically is unverified or
    blocking it. I want to confirm you've actually absorbed the memory
@@ -145,17 +157,32 @@ anything else. Then:
 4. Flag anything in CLAUDE.md/PROJECT_STATE.md/TASKS.md/FEATURES.md that
    looks stale or contradicts what you find in the actual code — don't
    silently work around a contradiction, surface it.
-5. Check TASKS.md's "Current task" section — if it says nothing is in
+5. Note the sibling-repo relationship before touching anything related to
+   it: `~/Projects/phone-watchdog` (no `-web`) is a separate git repo — a
+   local Python/YOLO prototype for the same idea. The two repos share no
+   code, API, or database at runtime (verified from both sides). This
+   repo's own commit message calls itself a "replacement" for that
+   script, but the sibling's own docs don't describe itself as
+   deprecated — treat that word as historical framing, not a confirmed
+   fact about whether the Python version is still used, and don't edit
+   the sibling repo from this session (read-only reference only).
+   This repo (unlike the sibling) does persist data: a Postgres
+   `catches` table storing two timestamps per phone-catch event
+   (`caught_at`/`cleared_at`) — never any image/video/frame data. See
+   `SECURITY.md`'s "Data-flow consistency check" section for the full
+   verification of that claim against the sibling's "nothing persisted"
+   claim.
+6. Check TASKS.md's "Current task" section — if it says nothing is in
    progress, ask me what to work on next rather than guessing; don't
    assume TASK-001 is what I want without confirming.
-6. Preserve the existing architecture (client-side-only detection via
+7. Preserve the existing architecture (client-side-only detection via
    TensorFlow.js, the single shared-password Basic Auth gate, the
    ad-hoc ensureTable() schema approach) unless you find a genuinely
    strong reason to change it — and if you do, write it up in
    DECISIONS.md rather than changing it silently.
-7. Do not start a long-running dev server, touch the real production
+8. Do not start a long-running dev server, touch the real production
    database, or deploy, without my explicit go-ahead.
-8. After completing any meaningful work, update PROJECT_STATE.md,
+9. After completing any meaningful work, update PROJECT_STATE.md,
    TASKS.md, and append to SESSION_LOG.md before ending your session —
    don't let the next handoff start from a stale snapshot.
 ```
