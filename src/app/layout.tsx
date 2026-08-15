@@ -12,9 +12,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://phone-watchdog-web.vercel.app";
+const TITLE = "Phone Watchdog";
+const DESCRIPTION = "Catches you on your phone via webcam and yells about it.";
+
 export const metadata: Metadata = {
-  title: "Phone Watchdog",
-  description: "Catches you on your phone via webcam and yells about it.",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: TITLE,
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({
