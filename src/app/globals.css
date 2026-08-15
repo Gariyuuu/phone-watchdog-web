@@ -24,3 +24,52 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* This app had zero motion of any kind before this pass — no blanket
+ * prefers-reduced-motion rule exists (or is needed) because there's
+ * nothing pre-existing to guard. Deliberately SCOPED rather than a
+ * blanket `*` rule: a blanket `.01ms` override fast-forwards any
+ * animation to its keyframe END STATE, which would be actively wrong
+ * for the ThinkingOrb loader added below (canvas-rendered, handles
+ * prefers-reduced-motion entirely on its own — a CSS rule reaching it
+ * would fight, not help). Only the two decorative pieces added in this
+ * pass are targeted here. */
+
+/* Start/Stop button press feedback (P07, independently implemented —
+ * kinetics.colorion.co ships license: null, technique only, no source
+ * copied). This button had literally zero interaction feedback before. */
+.watchdog-btn {
+  transition: transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.watchdog-btn:active {
+  transform: scale(0.96);
+}
+
+/* Alarm headline glow pulse (P06-adjacent, independently implemented —
+ * not copied from any effect gallery; loosely inspired by
+ * text-effects.colorion.co's "27 Cardio" heartbeat concept, rebuilt from
+ * scratch). "PUT YOUR PHONE DOWN" is FUNCTIONAL text, not decorative —
+ * this animates text-shadow only. Size, position, and opacity of the
+ * text itself never change across any frame; only a glow ornament
+ * pulses around it, so the message is fully legible from the instant it
+ * appears and stays that way throughout. */
+.fx-heartbeat {
+  animation: fx-heartbeat 1.4s ease-in-out infinite;
+}
+@keyframes fx-heartbeat {
+  0%, 100% { text-shadow: 0 0 0 transparent; }
+  14% { text-shadow: 0 0 18px rgba(255, 255, 255, 0.6); }
+  28% { text-shadow: 0 0 0 transparent; }
+  42% { text-shadow: 0 0 26px rgba(255, 255, 255, 0.75); }
+  70% { text-shadow: 0 0 0 transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .watchdog-btn {
+    transition-duration: 0.01ms;
+  }
+  .fx-heartbeat {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+}
