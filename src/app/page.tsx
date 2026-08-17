@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ThinkingOrb } from "thinking-orbs";
 
 const CONFIDENCE_THRESHOLD = 0.35;
 const DETECT_INTERVAL_MS = 300;
@@ -224,8 +225,9 @@ export default function Home() {
         <button
           onClick={running ? stop : start}
           disabled={modelLoading}
-          className="rounded-md bg-blue-600 px-5 py-2 font-medium text-white disabled:opacity-50"
+          className="watchdog-btn flex items-center gap-2 rounded-md bg-blue-600 px-5 py-2 font-medium text-white disabled:opacity-50"
         >
+          {modelLoading && <ThinkingOrb state="searching" size={20} theme="dark" aria-label="Loading detection model" />}
           {modelLoading ? "Loading model…" : running ? "Stop" : "Start"}
         </button>
         {error && <p className="text-red-600">{error}</p>}
@@ -257,7 +259,7 @@ export default function Home() {
 
       {caught && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-red-800">
-          <p className="text-center text-5xl font-extrabold text-white sm:text-6xl">
+          <p className="fx-heartbeat text-center text-5xl font-extrabold text-white sm:text-6xl">
             PUT YOUR PHONE DOWN
           </p>
           <p className="text-white/80">
