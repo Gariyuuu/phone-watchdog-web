@@ -1,5 +1,36 @@
 # PROJECT_STATE.md — Exact Handoff Snapshot
 
+## 2026-08-17 update [Verified] — read this before the rest of the file
+
+A documentation-sweep session (no feature work) found real drift since
+the 2026-08-07 checkpoint below: two feature commits landed, both merged
+to `main` (branch `main`, HEAD `9fe894e`, tree clean, no other local/
+remote branches outstanding):
+
+- `ee1206e`/`ebafc28` (2026-08-13/14) — added `src/app/opengraph-image.tsx`
+  (next/og-generated OG card), `src/app/robots.ts`, `src/app/sitemap.ts`,
+  and extended `src/app/layout.tsx`'s metadata (OpenGraph/Twitter tags).
+- `94abb61`/`9fe894e` (2026-08-15/17) — "motion polish": a `ThinkingOrb`
+  (`state="searching"`) alongside the existing "Loading model..." text
+  during the TensorFlow.js model download; press feedback on the
+  Start/Stop button (independently implemented technique, not copied
+  source, per the commit's own licensing note); a text-shadow-only glow
+  pulse on the "PUT YOUR PHONE DOWN" alarm text (deliberately restricted
+  to `text-shadow` only — opacity/color/size/position never change, per
+  the commit message, to avoid a photosensitivity concern on a
+  full-screen alarm). This was the app's first motion/animation of any
+  kind; a scoped (not blanket) `prefers-reduced-motion` guard was added
+  alongside it.
+
+Re-verified this sweep: `npm run lint` **still fails** with the exact
+same single `react-hooks/set-state-in-effect` error at
+`src/app/page.tsx:86` described in `TASKS.md`'s current task, `T-001`
+(a.k.a. `TASK-001`) — unfixed, confirmed still current. Also added: an explicit, code-verified
+confirmation (not just carried forward from prior notes) that this repo
+and `~/Projects/phone-watchdog` share no backend, code, or database — see
+`ARCHITECTURE.md`'s new "Relationship to `~/Projects/phone-watchdog`"
+section.
+
 ## Audit timestamp
 
 **2026-08-06**, performed by an AI coding session (account/identity not
@@ -96,7 +127,7 @@ lint error, primarily).
    value) to build the full environment-variable inventory.
 5. Inspected `node_modules/@vercel/postgres`'s own source to confirm
    which env var (`POSTGRES_URL`) it actually reads.
-6. Inspected `node_modules/next/dist/docs/` to confirm the `proxy.ts`
+6. Inspected `node_modules/next/dist/docs/` to confirm the `src/proxy.ts`
    file-convention rename is real (not a misconfiguration).
 7. Ran `git log`, `git status`, `git branch -a`, `git remote -v` to build
    the exact git state above.
@@ -110,7 +141,7 @@ lint error, primarily).
    which Vercel environments (names only).
 10. Ran a single read-only `curl` against
     `https://phone-watchdog-web.vercel.app/` (no credentials supplied) to
-    confirm the live Basic Auth gate responds as `proxy.ts` implies it
+    confirm the live Basic Auth gate responds as `src/proxy.ts` implies it
     should. No password was guessed or attempted.
 11. Checked the sibling repo `~/Projects/phone-watchdog` (`ls`, one
     `cat` attempt on a nonexistent `README.md`) only to confirm it's an

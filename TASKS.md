@@ -1,13 +1,16 @@
 # TASKS.md — Active Execution Queue
 
-## Current task
+## Current task: `T-001` (a.k.a. `TASK-001`, this repo's pre-existing ID)
 
 **None actively in progress.** The documentation audit that produced this
 memory system is complete as of 2026-08-06 (see `SESSION_LOG.md`). The
-best next pick from the backlog below is `TASK-001` (the lint error) —
-but confirm with the user before starting it; don't assume it's wanted
-without asking, per the standing rule that only the user or explicit
-instruction authorizes new work.
+best next pick from the backlog below is `TASK-001` (the lint error,
+also referenced as `T-001` elsewhere in this doc set for cross-repo
+consistency — same task, two labels) — but confirm with the user before
+starting it; don't assume it's wanted without asking, per the standing
+rule that only the user or explicit instruction authorizes new work.
+**Re-confirmed still failing, unchanged, on 2026-08-17** (`npm run lint`
+run directly — same single error, same line).
 
 If you are a fresh AI session picking this up cold: read `TASK-001`
 below in full — it is written to be resumable without any prior context
@@ -27,7 +30,7 @@ beyond this file and `CLAUDE.md`.
   86 |   }, [refreshLog]);
      react-hooks/set-state-in-effect
   ```
-  The offending code is the model-loading `useEffect` in `page.tsx`:
+  The offending code is the model-loading `useEffect` in `src/app/page.tsx`:
   ```tsx
   useEffect(() => {
     (async () => {

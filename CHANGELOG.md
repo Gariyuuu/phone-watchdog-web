@@ -68,7 +68,7 @@ detail on each):
   `CREATE TABLE IF NOT EXISTS` in `src/app/api/catches/route.ts`, run on
   every request — there is no migration file or migration system in this
   repo. See `DATABASE.md` "Migration risks."
-- `body`'s `font-family` in `globals.css` falls back to Arial/Helvetica
+- `body`'s `font-family` in `src/app/globals.css` falls back to Arial/Helvetica
   rather than the loaded Geist font variable — a real, verified
   discrepancy between what's wired up and what's actually applied. See
   `UI_SYSTEM.md`.

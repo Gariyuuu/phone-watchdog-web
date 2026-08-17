@@ -42,7 +42,7 @@ reasoning is fabricated beyond what the repo itself shows.
 ### DEC-003 — Rolling-window debounce instead of a strict consecutive-frame streak
 
 - **Label:** Verified.
-- **Evidence:** Code comment in `page.tsx`: "Rolling-window debounce
+- **Evidence:** Code comment in `src/app/page.tsx`: "Rolling-window debounce
   instead of a strict consecutive-frame streak: a single missed frame
   (occlusion by a hand, motion blur, a bad angle) no longer resets
   progress back to zero." Also stated in commit `ab92aae`'s message.
@@ -55,7 +55,7 @@ reasoning is fabricated beyond what the repo itself shows.
 ### DEC-004 — Best-effort, fire-and-forget database writes
 
 - **Label:** Verified.
-- **Evidence:** Code comment in `page.tsx`'s `refreshLog`: "logging is
+- **Evidence:** Code comment in `src/app/page.tsx`'s `refreshLog`: "logging is
   best-effort; ignore failures here." All catch/PATCH fetches use
   `.catch(() => {})`/`.catch(() => {})` with no user-facing error
   surfaced. `.env.example`'s comment states explicitly: "Leave unset

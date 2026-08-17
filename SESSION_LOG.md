@@ -27,7 +27,7 @@ newest last, oldest first, matching the order things actually happened).
   symlinks only, not the vendored skill content in detail),
   `node_modules/@vercel/postgres/dist/chunk-7IR77QAQ.js` (to confirm
   which env var the DB client reads), `node_modules/next/dist/docs/`
-  (to confirm the `proxy.ts` file-convention rename is real), full `git
+  (to confirm the `src/proxy.ts` file-convention rename is real), full `git
   log`/`git status`/`git branch -a`/`git remote -v`. Also briefly checked
   the sibling repo `~/Projects/phone-watchdog` (directory listing only)
   to confirm it's an unrelated Python prototype, per task instructions.
@@ -80,7 +80,7 @@ newest last, oldest first, matching the order things actually happened).
   (`TASK-001`), the total absence of runtime verification for the core
   feature (`TASK-002`), and several low-severity cosmetic/hygiene items
   (unused scaffold assets, stale `README.md`, a font-family wiring
-  discrepancy in `globals.css`).
+  discrepancy in `src/app/globals.css`).
 - **Work completed:** Full 17-file documentation system created/updated,
   cross-checked for internal consistency (the current task is described
   the same way in `CLAUDE.md`, `PROJECT_STATE.md`, `TASKS.md`, and
@@ -184,19 +184,63 @@ was changed.
 - **Recommended next action:** Same as the prior session — confirm with
   the user before starting `TASK-001`.
 
+## 2026-08-17 — Documentation sweep (onboard mode, no feature work)
+
+- **Account/agent:** Batch documentation-freshness sweep across several
+  portfolio repos, not tied to a specific new-work request in this repo.
+- **Goal:** Re-verify docs against real repo state; correct drift; do
+  not change application code.
+- **Files inspected:** `src/app/page.tsx` (re-ran `npm run lint` and
+  confirmed the exact failure location), `src/app/robots.ts`,
+  `src/app/sitemap.ts`, `src/app/opengraph-image.tsx`, `src/app/layout.tsx`,
+  `git log`, `git branch -a`. Also read `~/Projects/phone-watchdog/monitor.py`
+  directly (grepped for `requests`/HTTP/DB imports) to independently
+  re-confirm the "no shared backend" claim rather than just carrying it
+  forward from prior notes.
+- **Files changed:** `CLAUDE.md`, `PROJECT_STATE.md`, `TASKS.md`,
+  `HANDOFF.md`, `ARCHITECTURE.md`, `FEATURES.md`, `FILE_MAP.md`,
+  `SESSION_LOG.md` (this entry).
+- **Commands run:** `npm run lint` (read-only diagnostic, confirmed
+  still failing), `git log`, `git branch -a --merged/--no-merged`,
+  `git show --stat` on the new commits.
+- **Tests run:** `npm run lint` only (per above).
+- **Results:** Two feature commits found undocumented since the
+  2026-08-07 checkpoint: OG/robots/sitemap metadata (`ee1206e`/`ebafc28`)
+  and a "motion polish" pass (`94abb61`/`9fe894e`). `npm run lint` still
+  fails with the same error `TASK-001` describes (now at
+  `src/app/page.tsx:86`).
+- **Decisions made:** Added a `T-001` alias alongside this repo's
+  existing `TASK-001` ID so the current-task reference is consistent
+  with the format used across other repos in this portfolio, without
+  renaming or restructuring this repo's own established task list.
+- **Problems found:** None new. Confirmed `TASK-001` (lint) and
+  `TASK-002` (runtime smoke test) are both still open, unchanged.
+- **Work completed:** Updated all core docs plus `ARCHITECTURE.md` (new
+  explicit "Relationship to `~/Projects/phone-watchdog`" section) and
+  `FEATURES.md` (new entries for the two undocumented feature commits).
+  Fixed ~70 bare-filename path references (e.g. `` `page.tsx` `` →
+  `` `src/app/page.tsx` ``) and a handful of angle-bracket placeholder
+  tokens that were tripping `verify_docs.py`. `python3 verify_docs.py
+  --root .` — all checks pass. No secrets found. No application code
+  changed.
+- **Work remaining:** `TASK-001`/`T-001` (lint fix) and `TASK-002`
+  (runtime smoke test) — both pre-existing, unchanged by this sweep.
+- **Recommended next action:** Confirm with the user before starting
+  `TASK-001`.
+
 ## Template for future entries
 
-## YYYY-MM-DD — <short goal description>
-
-- **Account/agent:**
-- **Goal:**
-- **Files inspected:**
-- **Files changed:**
-- **Commands run:**
-- **Tests run:**
-- **Results:**
-- **Decisions made:**
-- **Problems found:**
-- **Work completed:**
-- **Work remaining:**
-- **Recommended next action:**
+> ## YYYY-MM-DD — short goal description
+>
+> - **Account/agent:**
+> - **Goal:**
+> - **Files inspected:**
+> - **Files changed:**
+> - **Commands run:**
+> - **Tests run:**
+> - **Results:**
+> - **Decisions made:**
+> - **Problems found:**
+> - **Work completed:**
+> - **Work remaining:**
+> - **Recommended next action:**

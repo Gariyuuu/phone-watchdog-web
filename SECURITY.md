@@ -12,7 +12,7 @@ verified directly from this repo's own code, not assumed:
 
 - **This dashboard does persist data.** `src/app/api/catches/route.ts`
   writes to a Postgres `catches` table on every alarm trigger (`POST`)
-  and clear (`PATCH`), and `page.tsx` renders that table's contents back
+  and clear (`PATCH`), and `src/app/page.tsx` renders that table's contents back
   as the "Caught log" list (`GET`).
 - **What's stored is strictly event metadata, never image/video data.**
   The `catches` table has exactly three columns: `id`, `caught_at`
@@ -110,7 +110,7 @@ that's unintentionally left open.
 
 **Both real env vars used by app code are server-only.** Neither
 `SITE_PASSWORD` nor `POSTGRES_URL` is prefixed `NEXT_PUBLIC_*`, and
-neither is referenced anywhere in client component code (`page.tsx`) —
+neither is referenced anywhere in client component code (`src/app/page.tsx`) —
 confirmed via grep. No environment variable in this app is exposed to
 the browser bundle.
 
@@ -140,7 +140,7 @@ meaningful stored-XSS surface in this app's current feature set.
 
 Low. All queries use `@vercel/postgres`'s `sql` tagged template
 (parameterized queries under the hood), never raw string concatenation —
-confirmed by reading every query in `route.ts`. The one place
+confirmed by reading every query in `src/app/api/catches/route.ts`. The one place
 user-influenced data reaches a query (`PATCH`'s `id`) goes through the
 tagged template's parameter binding, not string interpolation into raw
 SQL text.
@@ -235,12 +235,12 @@ concern rather than a confirmed leak.
 ## Recommended fixes (priority order)
 
 1. If this app is ever exposed beyond personal/trusted use, add basic
-   rate limiting to `proxy.ts` (e.g. a simple in-memory or edge-config
+   rate limiting to `src/proxy.ts` (e.g. a simple in-memory or edge-config
    attempt counter) before relying on password strength alone.
 2. Consider a constant-time comparison for the password check (e.g.
    Node's `crypto.timingSafeEqual`) — cheap to add, removes a
    theoretical class of attack even if impractical today.
-3. Differentiate the generic `500` error message in `route.ts` so
+3. Differentiate the generic `500` error message in `src/app/api/catches/route.ts` so
    internal error detail isn't uniformly echoed back (see `TASKS.md`
    `TASK-004`).
 4. If multi-user access is ever wanted, replace the shared-password model

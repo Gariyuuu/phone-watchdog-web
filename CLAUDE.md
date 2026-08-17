@@ -77,6 +77,19 @@ Where something couldn't be verified from the repo, it is labeled
 
 ## Current status
 
+**2026-08-17 update [Verified], documentation sweep (no feature work):**
+Current task `T-001` (a.k.a. `TASK-001`, see `TASKS.md`) is unchanged —
+the `npm run lint` failure, re-confirmed still failing this sweep by
+running it directly (same error, now at `src/app/page.tsx:86`). Two
+feature commits landed since the 2026-08-07 snapshot below, both merged
+to `main` (HEAD `9fe894e`, tree clean): OpenGraph/Twitter metadata +
+`src/app/robots.ts`/`src/app/sitemap.ts` (`ee1206e`/`ebafc28`), and a "motion polish"
+pass — `ThinkingOrb` during model load, button press feedback, alarm-text
+glow (`94abb61`/`9fe894e`). Also independently re-verified (not just
+carried forward) that this repo shares no backend/code/database with
+`~/Projects/phone-watchdog` — see `ARCHITECTURE.md`'s new section. Full
+detail in `PROJECT_STATE.md`'s 2026-08-17 block.
+
 See `PROJECT_STATE.md` for the exact, timestamped snapshot. Summary:
 
 - **Latest state:** Working tree clean, `main` branch, up to date with
@@ -85,15 +98,16 @@ See `PROJECT_STATE.md` for the exact, timestamped snapshot. Summary:
   handoff documentation system") — this is the commit that landed the
   17-file memory system itself; the previous entry point, `ecd6d89`
   ("Add custom favicon"), was the latest **application** commit and is
-  now one commit behind.
+  now one commit behind. **(Superseded by the 2026-08-17 update above —
+  4 more commits have since landed and been merged to `main`.)**
 - **Current blockers:** None functionally, but `npm run lint` currently
   **fails** (one ESLint error, not a warning) — see "Known issues" below.
   This is a pre-existing condition, not something introduced by this
-  audit. Re-confirmed still failing (same single error, same line) as of
-  the 2026-08-07 checkpoint pass.
+  audit. Re-confirmed still failing (same single error, now on a
+  different line number) as of the 2026-08-17 sweep.
 - **Highest-priority next task:** Fix the `react-hooks/set-state-in-effect`
-  lint error in `src/app/page.tsx` (line 85) so `npm run lint` passes
-  cleanly. See `TASKS.md`.
+  lint error in `src/app/page.tsx` (line 86 as of 2026-08-17) so
+  `npm run lint` passes cleanly. See `TASKS.md` → `T-001`.
 
 ## Technology stack
 
@@ -105,8 +119,8 @@ Versions below are copied verbatim from `package.json` / installed
 - **Frontend framework:** Next.js `16.2.12` (App Router, Turbopack build).
   **This is a very new/pre-release-era Next.js with breaking changes vs.
   older training data** — see `AGENTS.md`'s warning, which is accurate:
-  the `middleware.ts` file convention has been renamed to `proxy.ts`
-  (confirmed via `node_modules/next/dist/docs/.../proxy.md`, which states
+  the `middleware.ts` file convention has been renamed to `src/proxy.ts`
+  (confirmed via the proxy.md file under node_modules/next/dist/docs (path varies by version), which states
   "The `middleware` file convention is deprecated and has been renamed to
   `proxy`"). This repo already uses the new convention correctly
   (`src/proxy.ts`).
@@ -115,12 +129,12 @@ Versions below are copied verbatim from `package.json` / installed
   lockfile).
 - **Styling:** Tailwind CSS `^4` (installed: `4.3.3`) via
   `@tailwindcss/postcss`. No component library — every element in
-  `page.tsx` is raw JSX with inline Tailwind utility classes.
+  `src/app/page.tsx` is raw JSX with inline Tailwind utility classes.
 - **ML / detection:** `@tensorflow/tfjs` `^4.22.0` (installed `4.22.0`) +
   `@tensorflow-models/coco-ssd` `^2.2.3` (installed `2.2.3`), loaded via
   dynamic `import()` client-side only, using the `mobilenet_v2` base
   model (chosen over the faster `lite_mobilenet_v2` default — see the
-  code comment in `page.tsx` and `DECISIONS.md`).
+  code comment in `src/app/page.tsx` and `DECISIONS.md`).
 - **Database:** `@vercel/postgres` `^0.10.0` (installed `0.10.0`),
   reading `process.env.POSTGRES_URL` (confirmed by reading the package's
   own source, `node_modules/@vercel/postgres/dist/chunk-7IR77QAQ.js`).
@@ -142,7 +156,7 @@ Versions below are copied verbatim from `package.json` / installed
   (`SITE_PASSWORD` env var) implemented as HTTP Basic Auth in
   `src/proxy.ts`. Set on Vercel for the `Preview` and `Production`
   environments only (confirmed via `vercel env ls`) — **not** set for
-  `Development`, matching `proxy.ts`'s explicit "no password configured
+  `Development`, matching `src/proxy.ts`'s explicit "no password configured
   (e.g. local dev) — don't lock anyone out" fallback.
 - **Analytics:** None found in the repo.
 - **Payments:** None found in the repo.
@@ -215,7 +229,7 @@ phone-watchdog-web/
 │   │   │                       # alarm overlay/siren, catch-log UI, and
 │   │   │                       # the fetch calls to /api/catches.
 │   │   ├── layout.tsx          # Root layout: Geist/Geist Mono fonts, page
-│   │   │                       # <title>/description metadata.
+│   │   │                       # title tag/description metadata.
 │   │   ├── globals.css         # Tailwind import + two CSS custom
 │   │   │                       # properties (--background/--foreground)
 │   │   │                       # with a prefers-color-scheme dark override.
@@ -307,7 +321,7 @@ version:
 - **Client-server data flow is fire-and-forget on the client side:** DB
   write failures are caught and silently ignored (the alarm/detection UX
   never blocks on the network) — see the `.catch(() => {})` calls in
-  `page.tsx`. This is a deliberate resilience choice, not an oversight,
+  `src/app/page.tsx`. This is a deliberate resilience choice, not an oversight,
   per the inline comment "logging is best-effort; ignore failures here."
 
 ## Coding conventions
@@ -322,22 +336,22 @@ today," not a settled house style.
   one component (`Home`) and types (`CatchRow`), `SCREAMING_SNAKE_CASE`
   for module-level tuning constants (`CONFIDENCE_THRESHOLD`,
   `TRIGGER_WINDOW`, `CLEAR_HITS`, etc.).
-  File names: lowercase for Next.js special files (`page.tsx`,
-  `layout.tsx`, `route.ts`, `proxy.ts` — these names are Next.js
+  File names: lowercase for Next.js special files (`src/app/page.tsx`,
+  `src/app/layout.tsx`, `src/app/api/catches/route.ts`, `src/proxy.ts` — these names are Next.js
   conventions, not a project choice).
 - **Imports:** Path alias `@/*` → `src/*` configured in `tsconfig.json`
   but **not actually used anywhere yet** — every existing import is
   either a bare package import or a relative/framework-implicit one (no
   file currently imports another local file across directories). Follow
   the alias if/when that need arises.
-- **Components:** Function components only. `page.tsx` is explicitly
+- **Components:** Function components only. `src/app/page.tsx` is explicitly
   `"use client"` (needed for hooks, `navigator.mediaDevices`,
-  `AudioContext`). `layout.tsx` is a Server Component (default, no
+  `AudioContext`). `src/app/layout.tsx` is a Server Component (default, no
   directive).
 - **Heavy client-only libraries are dynamically imported inside a
   `useEffect`**, not imported at module top-level — `@tensorflow/tfjs`
   and `@tensorflow-models/coco-ssd` are both loaded via `await import(...)`
-  inside the model-loading effect in `page.tsx`, avoiding bundling
+  inside the model-loading effect in `src/app/page.tsx`, avoiding bundling
   TensorFlow.js into any server code path or blocking initial paint.
   **Recommended:** follow this pattern for any future heavy/browser-only
   dependency.
@@ -387,8 +401,8 @@ Full detail in `UI_SYSTEM.md`. Key facts and exact file locations:
 - **Component library:** None. No shadcn/ui, no headless UI kit — every
   element is a plain HTML tag with Tailwind utility classes.
 - **Typography:** Geist (sans) and Geist Mono, loaded via
-  `next/font/google` in `layout.tsx`; body font-family falls back to
-  `Arial, Helvetica, sans-serif` per `globals.css` (the Geist variable
+  `next/font/google` in `src/app/layout.tsx`; body font-family falls back to
+  `Arial, Helvetica, sans-serif` per `src/app/globals.css` (the Geist variable
   fonts are wired via CSS variables but the base `body` rule doesn't
   reference `var(--font-sans)` — see `UI_SYSTEM.md` for the exact
   discrepancy).
@@ -405,8 +419,8 @@ verified):
 
 | Variable | Purpose | Required? | Client/Server | Format | Safe placeholder |
 |---|---|---|---|---|---|
-| `SITE_PASSWORD` | Shared password checked by `src/proxy.ts`'s Basic Auth gate for the whole site | Optional at the code level (if unset, the gate is bypassed — see `proxy.ts`), but **set on Vercel Production and Preview** (confirmed via `vercel env ls`); **not set on Development** | Server-only | Plain string | `change-me-long-random-string` |
-| `POSTGRES_URL` | Postgres connection string read by `@vercel/postgres`'s `sql` tagged template (confirmed by reading the package's own source) | Optional at the code level (every API handler catches connection failures and returns a `500` rather than crashing — see `route.ts`), but **required for the catch log to persist**; set on Vercel for Production/Preview/Development | Server-only | Postgres connection URI, e.g. `postgres://user:pass@host/db?sslmode=require` | `postgres://user:pass@localhost:5432/dev` |
+| `SITE_PASSWORD` | Shared password checked by `src/proxy.ts`'s Basic Auth gate for the whole site | Optional at the code level (if unset, the gate is bypassed — see `src/proxy.ts`), but **set on Vercel Production and Preview** (confirmed via `vercel env ls`); **not set on Development** | Server-only | Plain string | `change-me-long-random-string` |
+| `POSTGRES_URL` | Postgres connection string read by `@vercel/postgres`'s `sql` tagged template (confirmed by reading the package's own source) | Optional at the code level (every API handler catches connection failures and returns a `500` rather than crashing — see `src/app/api/catches/route.ts`), but **required for the catch log to persist**; set on Vercel for Production/Preview/Development | Server-only | Postgres connection URI, e.g. `postgres://user:pass@host/db?sslmode=require` | `postgres://user:pass@localhost:5432/dev` |
 
 **Also present in `.env.local` (not documented in `.env.example`, and not
 referenced by any code in `src/` — verified via grep):**
@@ -512,7 +526,7 @@ Full detail in `DEPLOYMENT.md`. Summary:
 - **`SITE_PASSWORD` env var (on Vercel)** — do not rotate, unset, or
   print its value. It is only configured for Production/Preview; if it's
   ever accidentally removed there the site becomes fully open (the code
-  intentionally treats "unset" as "no gate," per the `proxy.ts` comment
+  intentionally treats "unset" as "no gate," per the `src/proxy.ts` comment
   — this is correct for local dev but would be a real exposure in
   production).
 - **`POSTGRES_URL` and the other Neon/Postgres env vars** — do not
@@ -523,7 +537,7 @@ Full detail in `DEPLOYMENT.md`. Summary:
   thing this repo has to a schema definition. If you ever add a real
   migration system, make sure it doesn't fight with this
   `CREATE TABLE IF NOT EXISTS` running on every request.
-- **The debounce constants in `page.tsx`** (`CONFIDENCE_THRESHOLD`,
+- **The debounce constants in `src/app/page.tsx`** (`CONFIDENCE_THRESHOLD`,
   `DETECT_INTERVAL_MS`, `TRIGGER_WINDOW`, `TRIGGER_HITS`, `CLEAR_WINDOW`,
   `CLEAR_HITS`) encode a previously-tuned trade-off (commit `ab92aae`
   explicitly reworked these to fix false negatives on hand-occluded
@@ -563,7 +577,7 @@ Headline items, in priority order:
 5. **No rate limiting, no per-catch ownership.** Anyone who has the
    shared `SITE_PASSWORD` can `POST`/`PATCH` the catch log arbitrarily
    (no per-request throttling, no auth check *inside* the route itself —
-   it relies entirely on `proxy.ts` having already gated the request).
+   it relies entirely on `src/proxy.ts` having already gated the request).
    Acceptable for a single-user personal tool; would need real
    authorization before any multi-user use. See `SECURITY.md`.
 6. **No automated tests, no CI workflow.** Every change is currently
@@ -614,7 +628,7 @@ Future Claude Code sessions (or any AI agent) working in this repo must:
     point of the task.
 16. Never remove the `AGENTS.md` Next.js-version warning without
     confirming it's actually stale — it was verified accurate this audit
-    (the `proxy.ts` rename is real).
+    (the `src/proxy.ts` rename is real).
 17. Never change `src/proxy.ts`'s gating logic, the `SITE_PASSWORD`/
     `POSTGRES_URL` env vars, or Vercel project settings casually — these
     are listed under "DO NOT CHANGE WITHOUT REVIEW" above.

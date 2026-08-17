@@ -9,13 +9,13 @@ no other resources).
 Every path in this app (pages and API routes alike) is gated by
 `src/proxy.ts`'s HTTP Basic Auth check before it reaches any handler,
 **except** `_next/static`, `_next/image`, and `favicon.ico` (see
-`config.matcher` in `proxy.ts`). If `SITE_PASSWORD` is set (confirmed via
+`config.matcher` in `src/proxy.ts`). If `SITE_PASSWORD` is set (confirmed via
 `vercel env ls` to be set on Vercel's Production and Preview
 environments, not Development), every request below requires a valid
 `Authorization: Basic base64(<anything>:<SITE_PASSWORD>)` header or it
 never reaches the handler — the responses documented below assume that
 gate has already been passed. No further per-route auth exists inside
-`route.ts` itself.
+`src/app/api/catches/route.ts` itself.
 
 ## `GET /api/catches`
 
@@ -58,7 +58,7 @@ gate has already been passed. No further per-route auth exists inside
 - **Auth/authz:** Site-wide Basic Auth only.
 - **Params:** None.
 - **Request body:** None required/read (the client sends an empty `POST`
-  with no body — `page.tsx`'s `triggerAlarm()` calls
+  with no body — `src/app/page.tsx`'s `triggerAlarm()` calls
   `fetch("/api/catches", { method: "POST" })` with no `body`/headers).
 - **Response shape (200):**
   ```json
@@ -123,7 +123,7 @@ gate has already been passed. No further per-route auth exists inside
 - No `DELETE /api/catches` (or any per-id `DELETE`) — rows cannot be
   removed via the API.
 - No `/api/catches/[id]` dynamic route — all operations go through the
-  single collection-level `route.ts` above, with `id` passed in the body
+  single collection-level `src/app/api/catches/route.ts` above, with `id` passed in the body
   for `PATCH`.
 - No pagination beyond the hardcoded `LIMIT 100` on `GET` (no cursor, no
   offset param).

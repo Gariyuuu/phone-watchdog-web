@@ -22,7 +22,7 @@ implicit App Router page/`_not-found` handling.
 
 ## Page structure
 
-Top to bottom in `page.tsx`'s JSX, exactly in this order:
+Top to bottom in `src/app/page.tsx`'s JSX, exactly in this order:
 1. `<h1>` — "Phone Watchdog" (`text-2xl font-bold`).
 2. `<video>` — the webcam preview (`muted`, `playsInline`,
    `w-full max-w-md rounded-lg bg-black`).
@@ -36,14 +36,14 @@ Top to bottom in `page.tsx`'s JSX, exactly in this order:
 ## Reusable components
 
 **None exist.** No `src/components/` directory. Every UI element is
-inline JSX inside the single `Home` component in `page.tsx`. If this app
+inline JSX inside the single `Home` component in `src/app/page.tsx`. If this app
 grows, extracting the video preview, the log list, and the alarm overlay
 into separate components would be a natural next step, but nothing like
 that has been started.
 
 ## Themes
 
-**No theme system.** `globals.css` defines exactly two CSS custom
+**No theme system.** `src/app/globals.css` defines exactly two CSS custom
 properties, `--background`/`--foreground`, switched via a
 `@media (prefers-color-scheme: dark)` block — this follows the OS/browser
 color-scheme preference automatically; there is no in-app toggle and no
@@ -63,11 +63,11 @@ color-scheme preference automatically; there is no in-app toggle and no
 ```
 
 However, in practice, **none of the actual UI elements reference these
-tokens** — every color used in `page.tsx` is a hardcoded Tailwind
+tokens** — every color used in `src/app/page.tsx` is a hardcoded Tailwind
 utility class (`bg-blue-600`, `text-red-600`, `bg-red-800`,
 `text-gray-500`, `bg-black`, `text-white`), not `bg-background`/
 `text-foreground`. The `--background`/`--foreground` tokens only affect
-the plain `body` CSS rule in `globals.css` (`background: var(--background);
+the plain `body` CSS rule in `src/app/globals.css` (`background: var(--background);
 color: var(--foreground);`), which is the page's base canvas color behind
 everything else. So: the page background/text color does follow OS dark
 mode; the button, error text, alarm overlay, and log text colors do not
@@ -76,7 +76,7 @@ adapt to dark mode at all (they're fixed Tailwind grays/reds/blues).
 ## Colors
 
 All hardcoded Tailwind v4 default palette classes, used directly (no
-custom palette defined in `globals.css` beyond the two tokens above):
+custom palette defined in `src/app/globals.css` beyond the two tokens above):
 
 | Class | Used for |
 |---|---|
@@ -90,10 +90,10 @@ custom palette defined in `globals.css` beyond the two tokens above):
 ## Typography
 
 `Geist` (sans) and `Geist Mono`, loaded via `next/font/google` in
-`layout.tsx`, exposed as CSS variables (`--font-geist-sans`,
+`src/app/layout.tsx`, exposed as CSS variables (`--font-geist-sans`,
 `--font-geist-mono`) and remapped into Tailwind's `--font-sans`/
-`--font-mono` via `@theme inline` in `globals.css`. **Note:** the plain
-`body` rule in `globals.css` sets `font-family: Arial, Helvetica,
+`--font-mono` via `@theme inline` in `src/app/globals.css`. **Note:** the plain
+`body` rule in `src/app/globals.css` sets `font-family: Arial, Helvetica,
 sans-serif` directly, rather than `var(--font-sans)` — so in practice the
 page renders in the browser's Arial/Helvetica fallback stack, not Geist,
 unless some other rule overrides it (none was found). This is a real,

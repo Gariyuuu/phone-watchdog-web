@@ -93,7 +93,7 @@ in the database at all.
 
 **None.** Every row is globally visible/mutable to anyone who passes the
 site's shared password — there is no `user_id`/owner column, and no
-`DELETE` endpoint exists in `route.ts` at all (only `GET`/`POST`/
+`DELETE` endpoint exists in `src/app/api/catches/route.ts` at all (only `GET`/`POST`/
 `PATCH`). The only way to remove a row would be a direct database
 operation outside this app's API.
 

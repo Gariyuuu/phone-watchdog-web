@@ -115,7 +115,7 @@ not "Verified complete," unless otherwise noted.
 - **External integrations:** None beyond the DB itself.
 - **Env vars:** `POSTGRES_URL` (required for persistence to work; its
   absence degrades gracefully — see below).
-- **Permissions:** None beyond the site-wide Basic Auth gate (`proxy.ts`)
+- **Permissions:** None beyond the site-wide Basic Auth gate (`src/proxy.ts`)
   — no per-catch ownership or per-user scoping exists.
 - **Validation:** `PATCH` checks `id` is present (`400` if missing);
   no other validation (no type check on `id`'s shape, no bounds on
@@ -180,6 +180,41 @@ not "Verified complete," unless otherwise noted.
   tool, not for anything more exposed.
 - **Remaining work:** None required for current scope.
 
+## SEO / link-preview metadata [Verified 2026-08-17, commits `ee1206e`/`ebafc28`]
+
+- **What:** `src/app/opengraph-image.tsx` (next/og-generated OG card),
+  `src/app/robots.ts`, `src/app/sitemap.ts`, plus OpenGraph/Twitter meta
+  tags added to `src/app/layout.tsx`.
+- **Status:** Present in code; not independently live-curl-verified this
+  sweep (unlike some sibling repos) because this site sits behind Basic
+  Auth (`src/proxy.ts`) — an unauthenticated `curl` would only confirm
+  the 401 gate, not the metadata routes themselves, and no credentials
+  were supplied. Treat as **code-verified, not live-verified**.
+
+## Motion polish [Verified 2026-08-17, commits `94abb61`/`9fe894e`]
+
+This app's first motion/animation of any kind (previously zero
+keyframes anywhere in the codebase):
+
+- A `ThinkingOrb` (`state="searching"`) renders alongside the existing
+  "Loading model..." text while the TensorFlow.js model downloads.
+- Start/Stop button press feedback (independently implemented technique
+  — the commit message notes the reference source, `kinetics.colorion.co`,
+  ships `license: null`, so only the technique was used, no source
+  copied).
+- A text-shadow-only glow pulse on the "PUT YOUR PHONE DOWN" alarm text
+  — deliberately restricted to `text-shadow` alone (opacity, color,
+  size, and position never change across any frame, in either motion
+  state, per the commit's own verification against computed styles in a
+  real browser). The commit message explicitly notes a pulse synced to
+  the siren on the alarm overlay itself was **deliberately not done** —
+  judged too close to a jump-scare/photosensitivity pattern for this
+  app.
+- A scoped (not blanket) `prefers-reduced-motion` guard was added
+  alongside the new motion, deliberately not a portfolio-wide `*` rule
+  (would conflict with the `ThinkingOrb` component's own independent
+  reduced-motion handling).
+
 ## Features explicitly NOT present (confirmed by absence, not assumed)
 
 - No user accounts/login beyond the single shared password.
@@ -189,5 +224,5 @@ not "Verified complete," unless otherwise noted.
 - No notification system beyond the in-tab siren/overlay (no browser
   push notifications, no email/SMS).
 - No data export/deletion UI for the catch log (no `DELETE` handler
-  exists in `route.ts`).
+  exists in `src/app/api/catches/route.ts`).
 - No analytics, no usage tracking.

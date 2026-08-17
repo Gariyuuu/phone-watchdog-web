@@ -31,7 +31,7 @@ at this size, every file matters.
 ### `src/app/layout.tsx`
 
 - **Purpose:** Root layout — HTML shell, font loading (Geist, Geist
-  Mono), page `<title>`/`description` metadata.
+  Mono), page the title tag/`description` metadata.
 - **What calls it:** Next.js App Router (automatic, wraps every page).
 - **What it calls:** `next/font/google` (`Geist`, `Geist_Mono`), imports
   `./globals.css`.
@@ -45,7 +45,7 @@ at this size, every file matters.
   CSS custom properties (`--background`, `--foreground`) with a
   `prefers-color-scheme: dark` override, remapped into Tailwind's
   `@theme inline` block.
-- **What calls it:** Imported once, by `layout.tsx`.
+- **What calls it:** Imported once, by `src/app/layout.tsx`.
 - **When to edit:** Adding new design tokens, changing the light/dark
   background-foreground pair.
 - **Edit risk:** Low, but note the `body` rule's `font-family` falls back
@@ -129,7 +129,7 @@ at this size, every file matters.
 | `.agents/skills/neon-postgres/SKILL.md` | Vendored Neon Postgres Agent Skill |
 | `.claude/skills/neon` | Symlink → `.agents/skills/neon` |
 | `.claude/skills/neon-postgres` | Symlink → `.agents/skills/neon-postgres` |
-| `AGENTS.md` | Warns that this Next.js version has breaking changes vs. an AI's training data — **verified accurate** (the `proxy.ts` rename is real) |
+| `AGENTS.md` | Warns that this Next.js version has breaking changes vs. an AI's training data — **verified accurate** (the `src/proxy.ts` rename is real) |
 | `CLAUDE.md` | This memory system's entry point (rewritten this audit; was previously `@AGENTS.md`) |
 
 ## Public assets (`public/`)
@@ -144,13 +144,13 @@ at this size, every file matters.
   constants at the top of the file (`CONFIDENCE_THRESHOLD`,
   `DETECT_INTERVAL_MS`, `TRIGGER_WINDOW`, `TRIGGER_HITS`, `CLEAR_WINDOW`,
   `CLEAR_HITS`).
-- **Change what counts as "a phone"** → `runDetection()` in `page.tsx`,
+- **Change what counts as "a phone"** → `runDetection()` in `src/app/page.tsx`,
   the `p.class === "cell phone"` check (coco-ssd's fixed COCO label set —
   changing this to detect a different object class is possible without
   retraining, since coco-ssd already recognizes 80 COCO classes).
 - **Change the alarm's look/text** → the `{caught && (...)}` JSX block at
-  the bottom of `page.tsx`.
-- **Change the siren sound** → `startSiren()` in `page.tsx` (Web Audio
+  the bottom of `src/app/page.tsx`.
+- **Change the siren sound** → `startSiren()` in `src/app/page.tsx` (Web Audio
   API oscillator settings: waveform, frequencies, tone-switch interval,
   gain).
 - **Change the auth password mechanism** → `src/proxy.ts`. Changing the
@@ -158,13 +158,13 @@ at this size, every file matters.
   settings, not in code.
 - **Change/add an API endpoint** → `src/app/api/catches/route.ts` (add a
   new exported HTTP-method function), or create a new
-  `src/app/api/<name>/route.ts` for a new resource.
-- **Change the DB schema** → `ensureTable()` in `route.ts`, being mindful
+  a new route folder under src/app/api/ with its own `route.ts` for a new resource.
+- **Change the DB schema** → `ensureTable()` in `src/app/api/catches/route.ts`, being mindful
   it won't retroactively alter an already-existing table (see
   `DATABASE.md`).
 - **Change fonts/page metadata** → `src/app/layout.tsx`.
 - **Change global design tokens** → `src/app/globals.css`.
 - **Add a new page/route** → create a new folder under `src/app/` per
-  Next.js App Router conventions; remember `proxy.ts`'s matcher already
+  Next.js App Router conventions; remember `src/proxy.ts`'s matcher already
   covers all non-static paths, so a new page is automatically behind the
   Basic Auth gate without any extra work.

@@ -1,5 +1,22 @@
 # HANDOFF.md — Start Here
 
+## 2026-08-17 update [Verified] — documentation sweep, no feature work
+
+Current task is still `T-001` (a.k.a. `TASK-001`, see `TASKS.md`) — the
+`npm run lint` failure, re-confirmed still failing this sweep (same
+error, now at `src/app/page.tsx:86` since two later commits shifted line
+numbers). This sweep also found and documented two feature commits that
+had landed since the 2026-08-07 checkpoint below, both merged to `main`
+(HEAD `9fe894e`, tree clean): OpenGraph/Twitter metadata + `src/app/robots.ts` +
+`src/app/sitemap.ts` (`ee1206e`/`ebafc28`), and a "motion polish" pass — a
+`ThinkingOrb` during model load, button press feedback, and a
+text-shadow-only glow pulse on the alarm text (`94abb61`/`9fe894e`,
+this app's first motion of any kind, with a scoped
+`prefers-reduced-motion` guard). Full detail in `PROJECT_STATE.md`'s
+2026-08-17 block. Also independently re-verified (not just carried
+forward) that this repo shares no backend/code/database with
+`~/Projects/phone-watchdog` — see `ARCHITECTURE.md`.
+
 ## What is this project?
 
 Phone Watchdog (web) — a single-page Next.js app that uses your webcam
@@ -38,9 +55,10 @@ not change any application code. See `TASKS.md` → "Current task" for the
 exact same framing.
 
 The best next pick, if the user wants suggestions, is `TASKS.md`
-`TASK-001`: fix the one currently-failing check, `npm run lint`'s
-`react-hooks/set-state-in-effect` error at `src/app/page.tsx:85`. But
-**confirm with the user before starting it** — don't assume it's wanted.
+`TASK-001` (`T-001`): fix the one currently-failing check, `npm run
+lint`'s `react-hooks/set-state-in-effect` error at `src/app/page.tsx:86`
+(re-confirmed failing 2026-08-17). But **confirm with the user before
+starting it** — don't assume it's wanted.
 
 ## What was the previous session doing?
 
@@ -98,11 +116,11 @@ Don't invent new feature work without being asked.
   Vercel — rotating or unsetting either has real consequences (open site,
   or a silently different/empty database) — see `CLAUDE.md` "DO NOT
   CHANGE WITHOUT REVIEW."
-- The debounce constants at the top of `page.tsx`
+- The debounce constants at the top of `src/app/page.tsx`
   (`CONFIDENCE_THRESHOLD`, `TRIGGER_WINDOW`/`TRIGGER_HITS`,
   `CLEAR_WINDOW`/`CLEAR_HITS`) — previously tuned to fix a real
   false-negative problem (commit `ab92aae`); don't change incidentally.
-- `ensureTable()` in `route.ts` — the only schema definition; editing it
+- `ensureTable()` in `src/app/api/catches/route.ts` — the only schema definition; editing it
   will **not** retroactively alter an already-existing live table (see
   `DATABASE.md`).
 

@@ -62,7 +62,7 @@ None.
    returning trigger/clear decisions. Currently it's inline inside
    `runDetection()`, coupled to refs and `model.detect()`, so it can't be
    tested in isolation without refactoring first.
-2. **The three API handlers** (`GET`/`POST`/`PATCH` in `route.ts`) —
+2. **The three API handlers** (`GET`/`POST`/`PATCH` in `src/app/api/catches/route.ts`) —
    could be tested against a real or test Postgres instance (or mocked
    `@vercel/postgres`) to confirm `ensureTable()`, the insert, the
    update-by-id, and the error paths all behave as documented.
@@ -88,7 +88,7 @@ first real verification:
 2. `npm run dev` (starts on `http://localhost:3000`; `SITE_PASSWORD` is
    not set on Vercel's Development environment, so confirm your local
    `.env.local` reflects whether you want the auth gate active locally —
-   if `SITE_PASSWORD` is unset in your shell/`.env.local`, `proxy.ts`
+   if `SITE_PASSWORD` is unset in your shell/`.env.local`, `src/proxy.ts`
    bypasses the gate entirely for local dev).
 3. Open `http://localhost:3000` in a browser with a working webcam.
 
@@ -132,9 +132,9 @@ first real verification:
     gets a `401` with a Basic Auth browser prompt, and the correct
     password grants access. (This exact behavior was already confirmed
     live against production this audit via `curl` — see
-    `PROJECT_STATE.md` — but re-verify after any change to `proxy.ts`.)
+    `PROJECT_STATE.md` — but re-verify after any change to `src/proxy.ts`.)
 
-### Regression check after any change to `page.tsx`'s detection constants
+### Regression check after any change to `src/app/page.tsx`'s detection constants
 
 14. Re-run steps 6–8 specifically — changing `CONFIDENCE_THRESHOLD`,
     `TRIGGER_WINDOW`/`TRIGGER_HITS`, or `CLEAR_WINDOW`/`CLEAR_HITS` can
@@ -187,4 +187,4 @@ npm run build
 ```
 
 Plus, ideally, the manual smoke-test checklist above — at minimum steps
-4–9 (the core detection/alarm loop) after any change to `page.tsx`.
+4–9 (the core detection/alarm loop) after any change to `src/app/page.tsx`.
