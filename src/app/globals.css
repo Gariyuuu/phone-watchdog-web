@@ -1,11 +1,23 @@
 @import "tailwindcss";
+@import "./design-system/master.css";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* ---- PORTFOLIO DESIGN SYSTEM · MASTER v1.2 ------------------------------
+   * phone-watchdog-web is stock create-next-app scaffold plus a
+   * prefers-color-scheme dark block -- no brand palette. Like daily-brief it
+   * gets a NEUTRAL ring: inventing an accent for a repo that has none is the
+   * same failure as flattening one that does.
+   * --foreground is 17.93:1 light / 16.91:1 dark against its own background.
+   * C7 -- one opaque neutral serves BOTH modes at 3.16:1, in the C7 L-band. */
+  --ring: var(--foreground);
+  --input: oklch(0.49 0 0);
 }
 
 @theme inline {
+  --color-input: var(--input);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -65,11 +77,18 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* !important on every declaration in this block is REQUIRED, not stylistic.
+   * MASTER's floor sets these SAME longhands with !important, and an important
+   * declaration beats a non-important one regardless of specificity or source
+   * order -- so without this the repo's authored policy is silently replaced
+   * by the system's, exactly as fluent lost its deliberate 120ms values.
+   * The rendered result happens to match here because both clamp to the same
+   * values; policy must still win by force, not by coincidence. */
   .watchdog-btn {
-    transition-duration: 0.01ms;
+    transition-duration: 0.01ms !important;
   }
   .fx-heartbeat {
-    animation-duration: 0.01ms;
-    animation-iteration-count: 1;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }
